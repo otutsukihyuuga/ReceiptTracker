@@ -85,7 +85,7 @@ export default function Dashboard() {
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} />
               <Tooltip
                 contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 13 }}
-                formatter={(v: number) => [`$${v}`, 'Spent']}
+                formatter={(v) => `$${v}`}
               />
               <Bar dataKey="amount" fill="#7c3aed" radius={[6, 6, 0, 0]} />
             </BarChart>
@@ -104,7 +104,7 @@ export default function Dashboard() {
               </Pie>
               <Tooltip
                 contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 13 }}
-                formatter={(v: number) => [`$${v}`, '']}
+                formatter={(v) => `$${v}`}
               />
             </PieChart>
           </ResponsiveContainer>

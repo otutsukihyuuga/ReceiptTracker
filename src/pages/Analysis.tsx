@@ -52,7 +52,7 @@ export default function Analysis() {
               <YAxis type="category" dataKey="category" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} width={80} />
               <Tooltip
                 contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 13 }}
-                formatter={(v: number) => [`$${v}`, 'Spent']}
+                formatter={(v) => `$${v}`}
               />
               <Bar dataKey="amount" fill="#7c3aed" radius={[0, 6, 6, 0]} />
             </BarChart>
@@ -72,7 +72,7 @@ export default function Analysis() {
               <Legend iconType="circle" iconSize={10} formatter={(v) => <span className="text-xs text-gray-600">{v}</span>} />
               <Tooltip
                 contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 13 }}
-                formatter={(v: number) => [`$${v}`, '']}
+                formatter={(v) => `$${v}`}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -89,7 +89,7 @@ export default function Analysis() {
             <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#9ca3af' }} />
             <Tooltip
               contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: 13 }}
-              formatter={(v: number) => [`$${v}`, '']}
+              formatter={(v) => `$${v}`}
             />
             <Legend iconType="circle" iconSize={10} formatter={(v) => <span className="text-xs text-gray-600">{v}</span>} />
             <Line type="monotone" dataKey="Groceries" stroke="#7c3aed" strokeWidth={2} dot={false} />
