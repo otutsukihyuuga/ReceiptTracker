@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Receipt,
@@ -11,8 +11,10 @@ import {
   X,
   Bell,
   ChevronDown,
+  LogOut,
 } from 'lucide-react'
 import clsx from 'clsx'
+import { useAuth } from '../context/AuthContext'
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -25,6 +27,16 @@ const navItems = [
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user, signOut } = useAuth()
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate('/login')
+  }
+
+  const displayName = user?.user_metadata?.full_name ?? user?.email ?? 'User'
+  const avatarLetter = displayName.charAt(0).toUpperCase()
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -106,13 +118,20 @@ export default function Layout() {
         {/* User profile */}
         <div className="px-4 py-4 border-t border-gray-100">
           <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-violet-400 to-violet-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-              A
+            <div className="w-8 h-8 bg-gradient-to-br from-violet-400 to-violet-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0">
+              {avatarLetter}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">Alex Johnson</p>
-              <p className="text-xs text-gray-500 truncate">alex@family.com</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
+            <button
+              onClick={handleSignOut}
+              title="Sign out"
+              className="text-gray-400 hover:text-red-500 transition-colors"
+            >
+              <LogOut size={16} />
+            </button>
           </div>
         </div>
       </aside>
@@ -136,7 +155,7 @@ export default function Layout() {
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
             </button>
             <div className="w-8 h-8 bg-gradient-to-br from-violet-400 to-violet-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-              A
+              {avatarLetter}
             </div>
           </div>
         </header>
