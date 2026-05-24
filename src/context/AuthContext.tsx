@@ -34,6 +34,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
+
+      // Ensure profile row exists on every sign-in (safety net for users
+      // who signed up before the DB trigger was deployed)
+      if (session?.user) {
+        supabase.from('profiles').upsert(
+          {
+            id: session.user.id,
+            full_name: session.user.user_metadata?.full_name ?? null,
+            avatar_url: session.user.user_metadata?.avatar_url ?? null,
+          },
+          { onConflict: 'id' }
+        )
+      }
     })
 
     return () => subscription.unsubscribe()

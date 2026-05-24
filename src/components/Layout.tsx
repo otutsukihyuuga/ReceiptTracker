@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import clsx from 'clsx'
 import { useAuth } from '../context/AuthContext'
+import { useGroup } from '../context/GroupContext'
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -28,7 +29,9 @@ const navItems = [
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, signOut } = useAuth()
+  const { groups, activeGroup, setActiveGroup } = useGroup()
   const navigate = useNavigate()
+  const [groupMenuOpen, setGroupMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
     await signOut()
@@ -72,17 +75,55 @@ export default function Layout() {
           </button>
         </div>
 
-        {/* Family Switcher */}
-        <div className="px-4 py-3 border-b border-gray-100">
-          <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-sm">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-violet-100 rounded-full flex items-center justify-center text-violet-600 font-semibold text-xs">
-                J
+        {/* Group Switcher */}
+        <div className="px-4 py-3 border-b border-gray-100 relative">
+          <button
+            onClick={() => setGroupMenuOpen(!groupMenuOpen)}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-sm"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-6 h-6 bg-violet-100 rounded-full flex items-center justify-center text-violet-600 font-semibold text-xs shrink-0">
+                {activeGroup?.name.charAt(0).toUpperCase() ?? '?'}
               </div>
-              <span className="text-gray-700 font-medium">Johnson Family</span>
+              <span className="text-gray-700 font-medium truncate">
+                {activeGroup?.name ?? 'No group'}
+              </span>
             </div>
-            <ChevronDown size={14} className="text-gray-400" />
+            <ChevronDown size={14} className={clsx('text-gray-400 transition-transform shrink-0', groupMenuOpen && 'rotate-180')} />
           </button>
+
+          {groupMenuOpen && (
+            <div className="absolute left-4 right-4 top-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 overflow-hidden">
+              {groups.length === 0 && (
+                <p className="px-3 py-2.5 text-xs text-gray-400 italic">No groups yet</p>
+              )}
+              {groups.map((g) => (
+                <button
+                  key={g.id}
+                  onClick={() => { setActiveGroup(g); setGroupMenuOpen(false) }}
+                  className={clsx(
+                    'w-full flex items-center gap-2.5 px-3 py-2.5 text-sm transition-colors text-left',
+                    activeGroup?.id === g.id
+                      ? 'bg-violet-50 text-violet-700 font-medium'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  )}
+                >
+                  <div className="w-6 h-6 bg-violet-100 rounded-full flex items-center justify-center text-violet-600 font-semibold text-xs shrink-0">
+                    {g.name.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="truncate">{g.name}</span>
+                </button>
+              ))}
+              <div className="border-t border-gray-100 mt-1 pt-1">
+                <button
+                  onClick={() => { navigate('/onboarding'); setGroupMenuOpen(false) }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-violet-600 hover:bg-violet-50 transition-colors text-left"
+                >
+                  + Create new group
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Nav Links */}
